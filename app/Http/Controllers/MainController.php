@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Parser;
 
 class MainController extends Controller
 {
     function index()
     {
-        $articles = array();
-        return view("main", array('articles' =>array('<h1>Article 1</h1>', '<h1>Article 2</h1>', '<h1>Article 3</h1>')));
+        $parser = new Parser();
+        $articles = $parser->getMainPageContent("https://habr.com/all/");
+        return view("main")->with(array('articles'=>$articles));
     }
 }

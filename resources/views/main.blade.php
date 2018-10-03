@@ -23,9 +23,11 @@
     </nav>
 
     <main role="main" id="main" class="container">
+    <ul>
       @foreach ($articles as $article)
-          <li>{{$article}}</li>
+      <li><a href="{{$article}}">{{$article}}</a></li>
      @endforeach
+    </ul>
     </main>
 </body>
 </html>
