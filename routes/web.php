@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::get('/home/', 'MainController@index');
+
+Route::get('/posts/', 'PostController@index');

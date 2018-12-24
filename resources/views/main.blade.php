@@ -24,10 +24,10 @@
 
     <main role="main" id="main" class="container">
     <ul>
-      @foreach ($articles as $article)
-      <li><a href="{{$article}}">{{$article}}</a></li>
-     @endforeach
-    </ul>
+    @foreach($articles as $article)
+       <li> <p> {{ $article }}</p> </li>
+    @endforeach
+   </ul>
     </main>
 </body>
 </html>

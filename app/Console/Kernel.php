@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\StartParse::class
         //
     ];
 
@@ -26,11 +27,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->call(function () 
+        /*$schedule->call(function () 
         {
-            
-        });
-        
+           
+        });*/
+        $schedule->command('parser:start')->everyFiveMinutes();
     }
 
     /**

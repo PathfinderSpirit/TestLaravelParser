@@ -9,8 +9,6 @@ class MainController extends Controller
 {
     function index()
     {
-        $parser = new Parser();
-        $articles = $parser->getMainPageContent("https://habr.com/all/");
-        return view("main")->with(array('articles'=>$articles));
+        
     }
 }

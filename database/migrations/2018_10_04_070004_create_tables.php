@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTable extends Migration
+class CreateTables extends Migration
 {
     /**
      * Run the migrations.
@@ -18,12 +18,11 @@ class CreateTable extends Migration
             Schema::create('posts', function (Blueprint $table)
             {
                 $table->increments('id');
-                $table->string('title');
                 $table->string('text');
                 $table->integer('articleId')->unique();
                 $table->dateTime('created_at');
-                $table->primary('id');
             });
+        }
 
         if(!Schema::hasTable('tags'))
         {
@@ -31,12 +30,11 @@ class CreateTable extends Migration
             {
                 $table->increments('id');
                 $table->string('name');
-                $table->primary('id');
             });
         }        
 
      }
-    }
+    
 
     /**
      * Reverse the migrations.

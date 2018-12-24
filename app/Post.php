@@ -5,9 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
-{
-    public function tags()
-    {
-        return $this->belongsToMany('app\Tag');
-    }
+{    
+    protected $primaryKey='id';
+    protected $table='posts';   
+    protected $fillable=array('text','articleId','created_at');
 }

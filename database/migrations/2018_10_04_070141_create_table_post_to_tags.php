@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTagsToPostsTable extends Migration
+class CreateTablePostToTags extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateTagsToPostsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('tags_to_posts'))
+        if(!Schema::hasTable('post_to_tags'))
         {
-            Schema::create('tags_to_posts', function (Blueprint $table)
+            Schema::create('post_to_tags', function (Blueprint $table)
             {
-                $table->integer('tagId', 10)->unsigned();
-                $table->integer('postId', 10)->unsigned();
+                $table->integer('tagId', 20)->unsigned();
+                $table->integer('postId')->unsigned();
                 $table->foreign('tagId')->references('id')->on('tags');
                 $table->foreign('postId')->references('id')->on('posts');
             });
@@ -32,6 +32,6 @@ class CreateTagsToPostsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tags_to_posts');
+        Schema::dropIfExists('post_to_tags');
     }
 }
