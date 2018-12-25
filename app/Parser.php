@@ -19,11 +19,9 @@ class Parser
         $content = $crawler->filterXPath('//*[contains(@class, "post__body post__body_full")]')->html();
         $title = $crawler->filterXPath('//*[contains(@class, "post__title-text")]')->html();
         $created_at = $crawler->filterXPath('//*[contains(@class, "post__time")]')->html();
-        $tags = [];
-        $tagList =  $crawler->filterXPath('//*[contains(@class, "inline-list inline-list_fav-tags js-post-tags")]')->children();
-        foreach ($crawler as $domElement) {
-            array_push($tags, $domElement->ownerDocument->saveHTML($domElement));
-        }        
+        $tagList = $crawler->filterXPath('//*[contains(@class, "inline-list__item-link post__tag  ")]')->each(function (Crawler $node, $i) {
+            return $node->text();
+        });     
         $articleId = 0;
         preg_match("/([0-9]){2,}/", $link, $articleId);
         $data = 
@@ -95,19 +93,28 @@ class Parser
     
     public function writeToDB($article)
     {
+        $tagList = self::getTagList();
         DB::insert('insert into posts (text, articleId, created_at) values (?, ?, ?)',
-         [$article['text'], $article['articleId'], $article['created_at']]);        
-    }
-
-    public function getLastId()
-    {
-        $lastId = DB::table('posts')->max('articleId');
-        return $lastId;
+         [$article['text'], $article['articleId'], $article['created_at']]);   
+        foreach($article['tags'] as $tag)
+        {
+            if(!in_array($tag, $tagList)){
+                DB::insert('insert into tags (name) values (?)', [$tag]);
+            }
+           
+        }
+        
     }
 
     public function getIdList()
     {
         $result = DB::table('posts')->pluck('articleId')->toArray();
+        return $result;
+    }
+
+    public function getTagList()
+    {
+        $result = DB::table('tags')->pluck('name')->toArray();
         return $result;
     }
 
