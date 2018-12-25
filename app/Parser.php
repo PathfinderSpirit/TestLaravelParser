@@ -93,15 +93,21 @@ class Parser
     
     public function writeToDB($article)
     {
-        $tagList = self::getTagList();
+        $tagList = self::getTagList();        
         DB::insert('insert into posts (text, articleId, created_at) values (?, ?, ?)',
          [$article['text'], $article['articleId'], $article['created_at']]);   
+        $postId = DB::table('posts')->max('id');
         foreach($article['tags'] as $tag)
         {
+            $tagId = -1;
             if(!in_array($tag, $tagList)){
-                DB::insert('insert into tags (name) values (?)', [$tag]);
+                DB::insert('insert into tags (name) values (?)', [$tag]);  
+                $tagId = DB::table('tags')->max('id');            
             }
-           
+            else{
+                $tagId = DB::table('tags')->select('id')->where('name', '=', $tag)->first()->id;
+            }
+           DB::insert('insert into post_to_tags (tagId, postId) values (?,?)', [$tagId, $postId]);
         }
         
     }

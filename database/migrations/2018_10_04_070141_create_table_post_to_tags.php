@@ -17,6 +17,7 @@ class CreateTablePostToTags extends Migration
         {
             Schema::create('post_to_tags', function (Blueprint $table)
             {
+                $table->increments('id');
                 $table->integer('tagId', 20)->unsigned();
                 $table->integer('postId')->unsigned();
                 $table->foreign('tagId')->references('id')->on('tags');
