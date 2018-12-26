@@ -8,5 +8,6 @@ class Tag extends Model
 {
     protected $primaryKey='id';
     protected $table='tags';   
+    public $timestamps = false;
     protected $fillable=array('name');
 }

@@ -4,13 +4,16 @@ namespace App;
 
 use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Support\Facades\DB;
-use DateTime;
+use App\Post;
+use App\Tag;
+use App\Libraries\DateParser;
 
 
 class Parser
 {
     public function getContent($link)
     {
+        
         // Get html remote text.
         $html = file_get_contents($link);
 
@@ -22,6 +25,7 @@ class Parser
         $tagList = $crawler->filterXPath('//*[contains(@class, "inline-list__item-link post__tag  ")]')->each(function (Crawler $node, $i) {
             return $node->text();
         });     
+
         $articleId = 0;
         preg_match("/([0-9]){2,}/", $link, $articleId);
         $data = 
@@ -30,7 +34,7 @@ class Parser
             'tags' => $tagList,
             'title' =>$title,
             'articleId' => $articleId[0],
-            'created_at' => self::parseDate($created_at)
+            'created_at' => DateParser::parseDate($created_at)
         ];
         
         return $data;
@@ -55,9 +59,9 @@ class Parser
 
     }
     public function startParse()
-    {
+    {       
         $mainLink = "https://habr.com/all/";
-        $idList = self::getIdList();
+        $idList = Post::all()->pluck('articleId')->toArray();
         $articlesArray = [];
         $links_to_parse = [];
         $isExist = true;
@@ -93,78 +97,24 @@ class Parser
     
     public function writeToDB($article)
     {
-        $tagList = self::getTagList();        
-        DB::insert('insert into posts (text, articleId, created_at) values (?, ?, ?)',
-         [$article['text'], $article['articleId'], $article['created_at']]);   
-        $postId = DB::table('posts')->max('id');
+        $tagList = Tag::all()->pluck('id')->toArray();      
+        $post = Post::create(['text' => $article['text'], 'articleId' => $article['articleId'], 'created_at' => $article['created_at']]);
         foreach($article['tags'] as $tag)
         {
-            $tagId = -1;
+            $currentTag;
             if(!in_array($tag, $tagList)){
-                DB::insert('insert into tags (name) values (?)', [$tag]);  
-                $tagId = DB::table('tags')->max('id');            
+                $currentTag = Tag::create(['name' => $tag]);        
             }
             else{
-                $tagId = DB::table('tags')->select('id')->where('name', '=', $tag)->first()->id;
+                $currentTag = Tag::where('name', $tag)->first();
             }
-           DB::insert('insert into post_to_tags (tagId, postId) values (?,?)', [$tagId, $postId]);
-        }
-        
-    }
-
-    public function getIdList()
-    {
-        $result = DB::table('posts')->pluck('articleId')->toArray();
-        return $result;
-    }
-
-    public function getTagList()
-    {
-        $result = DB::table('tags')->pluck('name')->toArray();
-        return $result;
-    }
-
-    public function parseDate($value)
-    {
-        $alphaDate = preg_split("/[ :]+/", $value);
-        $date = new DateTime();
-
-        if(count($alphaDate) == 4)
-        {
-            $currentDate = getdate();
-            if($alphaDate[0] == 'сегодня'){
-                $date->setDate($currentDate['year'], $currentDate['mon'], $currentDate['mday']);
-                
-            }
-            else if($alphaDate[0] == 'вчера'){
-                $date->setDate($currentDate['year'], $currentDate['mon'], $currentDate['mday']-1);
-            }
-            $date->setTime($alphaDate[2], $alphaDate[3]);
-        }
-        else{
-            $date->setDate($alphaDate[2], self::parseMonth($alphaDate[1]), $alphaDate[0]);
-            $date->setTime($alphaDate[4], $alphaDate[5]);
-        }
-        return $date;
-    }
-
-    public function parseMonth($month)
-    {
-        $monthArray =
-        [
-            'января' => 1,
-            'февраля' => 2,
-            'марта' => 3,
-            'апреля' => 4,
-            'мая' => 5,
-            'июня' => 6,
-            'июля' => 7,
-            'августа' => 8,
-            'сентября' => 9,
-            'октября' => 10,
-            'ноября' => 11,
-            'декабря' => 12
-        ];
-        return $monthArray[$month];
+           DB::insert('insert into post_to_tags (tagId, postId) values (?,?)', [$currentTag->id, $post->id]);
+        }        
     }
 }
+
+    
+
+   
+
+    
