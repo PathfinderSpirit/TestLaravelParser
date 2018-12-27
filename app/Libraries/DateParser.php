@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Libraries;
 
 use DateTime;
 
@@ -31,7 +31,7 @@ class DateParser
         return $date;
     }
 
-    public function parseMonth($month)
+    public static function parseMonth($month)
     {
         $monthArray =
         [

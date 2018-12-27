@@ -23,11 +23,18 @@
     </nav>
 
     <main role="main" id="main" class="container">
-    <ul>
-    @foreach($articles as $article)
-       <li> <p> {{ $article }}</p> </li>
+    <div class="row">
+        <button type="button" class="btn btn-primary">По убыванию</button>
+        <button type="button" class="btn btn-primary">По возрастанию</button>
+    </div>
+    @foreach($posts as $post)
+       <article>
+            <h1> {{ $post->title}}</h1> 
+            <h3> {{ $post->created_at}}</h3>
+            <p> {{$post->text}}</p>
+        </article>
     @endforeach
-   </ul>
+    {{ $posts->links() }}
     </main>
 </body>
 </html>

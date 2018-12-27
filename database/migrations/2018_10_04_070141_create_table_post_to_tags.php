@@ -17,11 +17,11 @@ class CreateTablePostToTags extends Migration
         {
             Schema::create('post_to_tags', function (Blueprint $table)
             {
-                $table->increments('id');
-                $table->integer('tagId', 20)->unsigned();
-                $table->integer('postId')->unsigned();
-                $table->foreign('tagId')->references('id')->on('tags');
-                $table->foreign('postId')->references('id')->on('posts');
+                $table->increments('id')->unsigned();
+                $table->integer('tag_ref')->unsigned();
+                $table->integer('post_ref')->unsigned();
+                $table->foreign('tag_ref')->references('id')->on('tags');
+                $table->foreign('post_ref')->references('id')->on('posts');
             });
         }
     }

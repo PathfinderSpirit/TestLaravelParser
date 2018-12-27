@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Libraries;
 
 use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Support\Facades\DB;
@@ -94,21 +94,22 @@ class Parser
             }
         }
     }
-    
+    //writes grabbed post to DataBase
     public function writeToDB($article)
     {
-        $tagList = Tag::all()->pluck('id')->toArray();      
-        $post = Post::create(['text' => $article['text'], 'articleId' => $article['articleId'], 'created_at' => $article['created_at']]);
+        $tagList = Tag::all()->pluck('id')->toArray(); //get all tags for double checking 
+        $post = Post::create(['title' => $article['title'],
+                            'text' => $article['text'],
+                            'articleId' => $article['articleId'],
+                            'created_at' => $article['created_at']]); 
         foreach($article['tags'] as $tag)
         {
-            $currentTag;
-            if(!in_array($tag, $tagList)){
-                $currentTag = Tag::create(['name' => $tag]);        
+            $currentTag = Tag::where('name', $tag)->first();
+            if(!$currentTag){ 
+                $currentTag = Tag::create(['name' => $tag]);     
             }
-            else{
-                $currentTag = Tag::where('name', $tag)->first();
-            }
-           DB::insert('insert into post_to_tags (tagId, postId) values (?,?)', [$currentTag->id, $post->id]);
+            DB::table("post_to_tags")->insert(['tag_ref' => $currentTag->id, 'post_ref' => $post->id]);
+           //DB::insert('insert into post_to_tags (tag_ref, post_ref) values (?,?)', [$currentTag->id, $post->id]);
         }        
     }
 }

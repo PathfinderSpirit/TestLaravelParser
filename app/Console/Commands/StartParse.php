@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
-use App\Parser;
+use App\Libraries\Parser;
 use Illuminate\Console\Command;
 
 class StartParse extends Command

@@ -18,6 +18,7 @@ class CreateTables extends Migration
             Schema::create('posts', function (Blueprint $table)
             {
                 $table->increments('id');
+                $table->string('title');
                 $table->longText('text');
                 $table->integer('articleId')->unique();
                 $table->dateTime('created_at');
