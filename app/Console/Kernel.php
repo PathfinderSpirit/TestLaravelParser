@@ -31,7 +31,10 @@ class Kernel extends ConsoleKernel
         {
            
         });*/
-        $schedule->command('parser:start')->everyFiveMinutes();
+        $fd = fopen("app\config.txt", 'r') or die("не удалось открыть файл");
+        $str = htmlentities(fgets($fd));
+        fclose($fd);
+        $schedule->command('parser:start')->cron($str);
     }
 
     /**

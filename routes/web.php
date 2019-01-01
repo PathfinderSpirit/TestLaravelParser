@@ -11,10 +11,4 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/home/', 'MainController@index');
-
-Route::get('/posts/', 'PostController@index');
+Route::get('/', 'MainController@index');

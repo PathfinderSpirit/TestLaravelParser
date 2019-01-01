@@ -9,7 +9,7 @@ class MainController extends Controller
 {
     function index()
     {
-        $posts = Post::paginate(10);
+        $posts = Post::orderBy('created_at', 'desc')->paginate(10);
         return view('main', ['posts' => $posts]);
     }
 }
