@@ -24,8 +24,8 @@
 
     <main role="main" id="main" class="container">
     <div class="row">
-        <button type="button" class="btn btn-primary">По убыванию</button>
-        <button type="button" class="btn btn-primary">По возрастанию</button>
+        <a class="btn btn-primary" href="/desc" role="button">Сначала свежие посты</a>
+        <a class="btn btn-primary" href="/asc" role="button">Сначала старые посты</a>
     </div>
     @foreach($posts as $post)
        <article>
